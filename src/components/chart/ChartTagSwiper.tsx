@@ -1,0 +1,62 @@
+import React from 'react'
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode } from 'swiper/modules';
+import { ChartTag } from '@/types/chart';
+import TagBtn from '@/components/common/TagBtn';
+
+import 'swiper/css';
+import 'swiper/css/free-mode';
+
+interface TagSwiperProps {
+    // tabType: 'top' | 'genre' | 'mood';
+    tagList: ChartTag[];
+    selectedTag: string;
+    setSelectedTag: (tag: string) => void;
+}
+
+function ChartTagSwiper({tagList, selectedTag, setSelectedTag}: TagSwiperProps) {
+    const selectedIndex = tagList?.findIndex((tag) => String(tag.id) === String(selectedTag));
+
+    if (!tagList || tagList.length === 0) return null;
+  return (
+      <div className='chart-tagbtn-box'>
+        {selectedTag && (
+            <Swiper
+                key={`swiper-${selectedIndex}`}
+                initialSlide={selectedIndex === -1 ? 0 : selectedIndex}
+                modules={[FreeMode]}
+                slidesPerView={'auto'}
+                freeMode={true}
+                // slideToClickedSlide={true} // 클릭하면 그 슬라이드로 이동하게 함
+            >
+                {tagList.map((tag) => (
+                    <SwiperSlide key={tag.id}>
+                        <button onClick={() => {setSelectedTag(String(tag.id))}}>
+                            <TagBtn tagbtn={tag.name} className={`chart-tagbtn ${String(selectedTag) === String(tag.id) ? 'active' : ''}`}/>
+                        </button>
+                    </SwiperSlide>
+                ))}
+                {/* {tabType === 'top' ? (
+                    tagList.map((tag: string) => (
+                        <SwiperSlide key={tag}>
+                            <button onClick={() => {setSelectedTag(tag)}}>
+                                <TagBtn tagbtn={tag} className={`chart-tagbtn ${selectedTag === tag ? 'active' : ''}`}/>
+                            </button>
+                        </SwiperSlide>
+                    ))
+                ) : (
+                    tagList.map((tag: { kor: string, eng: string }) => (
+                        <SwiperSlide key={tag.kor}>
+                            <button onClick={() => {setSelectedTag(tag.eng)}}>
+                                <TagBtn tagbtn={tag.kor} className={`chart-tagbtn ${selectedTag === tag.eng ? 'active' : ''}`}/>
+                            </button>
+                        </SwiperSlide>
+                    ))
+                )} */}
+            </Swiper>
+        )}
+    </div>
+  )
+}
+
+export default ChartTagSwiper

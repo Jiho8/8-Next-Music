@@ -1,0 +1,240 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { DropResult } from '@hello-pangea/dnd';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
+import { useUIStore } from '@/store/useUIStore';
+import { useSnackbarStore } from '@/store/useSnackbarStore';
+import { usePlaylistEditStore } from '@/store/usePlaylistEditStore';
+import { useUserProfile } from '@/hooks/useUserProfile';
+import { getPlaylists, deletePlaylists, updatePlaylistOrder } from '@/lib/api/myPlaylist';
+import { MyPlaylist } from '@/types/user/myPlaylist';
+
+import CDcase from '@/components/icons/CDcase';
+import EmptyState from '@/components/common/EmptyState';
+import TrashButton from '@/components/common/TrashButton';
+import AddPlaylistButton from '@/components/common/AddPlaylistButton';
+import MediaSkeleton from '@/components/loading/item/MediaSkeleton';
+import PlaylistListDnD from '@/components/entities/playlist/ui/playlist/PlaylistListDnD';
+import Check from '@/components/icons/Check';
+import ThumbnailGrid from './ThumbnailGrid';
+import PlaylistCard from '../../entities/playlist/ui/playlist/PlaylistCard';
+
+import '@/styles/myPlaylist/newPlaylist.scss';
+
+const MyPlaylistsSection = () => {
+  const { isEditMode, selectedIds, toggleSelect, setEditMode, setSelectedIds } = usePlaylistEditStore();
+  const { setHideBottomNav } = useUIStore();
+  const show = useSnackbarStore(state => state.show);
+
+  const { data: session } = useSession();
+  const { data: user } = useUserProfile(session);
+  const router = useRouter();
+  
+  const queryClient = useQueryClient();
+
+  // DnD 상태
+  const [ localList, setLocalList ] = useState<MyPlaylist[]>([]);
+
+  // 내 플리 삭제
+  const deleteMutation = useMutation({
+    mutationFn: deletePlaylists,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['myplaylist', user?.id],
+      });
+
+      setSelectedIds([]);
+    },
+  });
+
+  // 내 플리 순서 변경
+  const orderMutation = useMutation({
+    mutationFn: updatePlaylistOrder,
+  });
+
+  // 내 플리 가져오기
+  const { data: myplaylist, isLoading } = useQuery<MyPlaylist[]>({
+    queryKey: ['myplaylist', user?.id],
+    queryFn: () => getPlaylists(),
+    enabled: !!user?.id,
+    staleTime: 0,
+  });
+
+  useEffect(() => {
+    if (myplaylist) setLocalList(myplaylist);
+  }, [myplaylist]);
+
+  useEffect(() => {
+    setHideBottomNav(selectedIds.length > 0);
+
+    return () => {
+      setHideBottomNav(false);
+    };
+  }, [selectedIds, setHideBottomNav]);
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const items = Array.from(localList);
+    const [removed] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, removed);
+
+    setLocalList(items);
+  };
+
+  const handleEditMode = async () => {
+    if (isEditMode) {
+      const deletedIds =
+        myplaylist
+          ?.filter(item => !localList.some(local => local.id === item.id))
+          .map(item => item.id) ?? [];
+
+      const reordered = localList.map((item, index) => ({
+        id: item.id,
+        order: index,
+      }));
+
+      try {
+        if (deletedIds.length > 0) {
+          await deleteMutation.mutateAsync(deletedIds);
+        }
+
+        await orderMutation.mutateAsync(reordered);
+        show('내 플리 수정 완료 - !');
+
+        setEditMode(false);
+        return;
+      } catch (error) {
+        console.error(error);
+        return;
+      }
+    }
+
+    setEditMode(true);
+  };
+
+  const isAllSelected =
+    localList.length > 0 && selectedIds.length === localList.length;
+
+  const handleSelectAll = () => {
+    if (isAllSelected) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(localList.map((item) => item.id));
+    }
+  };
+
+  // 내 플리 삭제
+  const handleDelete = () => {
+    setLocalList(prev =>
+      prev.filter(item => !selectedIds.includes(item.id))
+    );
+
+    setSelectedIds([]);
+  };
+
+  return (
+    <>
+      <div className='myplaylist-btn'>
+        {!isEditMode ? (
+          <>
+            <AddPlaylistButton />
+            <button className='submit' onClick={() => setEditMode(true)}>
+              편집
+            </button>
+          </>
+        ) : (
+          <>
+            <button className='action-btn' onClick={handleSelectAll}>
+              <Check />
+              <p>{isAllSelected ? '전체 해제' : '전체 선택'}</p>
+            </button>
+
+            <div className='edit-actions'>
+              {/* 취소 */}
+              <button
+                className='submit cancel-btn'
+                onClick={() => {
+                  setEditMode(false);
+
+                  // rollback (선택 초기화 + DnD 원복)
+                  setSelectedIds([]);
+                  setLocalList(myplaylist ?? []);
+                }}
+              >
+                취소
+              </button>
+
+              {/* 완료 */}
+              <button
+                className='submit complete-btn'
+                onClick={handleEditMode}
+                disabled={orderMutation.isPending}
+              >
+                {orderMutation.isPending ? '저장 중...' : '완료'}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+
+      {isLoading ? (
+        <div className="playlist-list myplaylist-list">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <MediaSkeleton key={`init-${i}`} />
+          ))}
+        </div>
+        
+      ) : localList.length === 0 ? (
+        <EmptyState
+          image={<CDcase />}
+          title="텅 - ❗"
+          description="온전히 너의 취향으로 가득 채워봐 ⋆｡°"
+        />
+        ) : isEditMode ? (
+        // 편집모드
+        <ul className="playlist-list myplaylist-list">
+          <PlaylistListDnD
+            playlists={localList}
+            selectedIds={selectedIds}
+            onToggle={toggleSelect}
+            onDragEnd={handleDragEnd}
+            isEditMode={isEditMode}
+          />
+        </ul>
+      ) : (
+        <ul className="playlist-list myplaylist-list">
+          {localList?.map((playlist) => (
+            <PlaylistCard
+              key={playlist.id}
+              thumbnail={
+                <ThumbnailGrid
+                  thumbnails={playlist.thumbnails || []}
+                  className="small-thumbnail"
+                />
+              }
+              title={playlist.title}
+              user={playlist.user?.nickname || playlist.user?.name}
+              tracks={playlist.tracks.length}
+              isEditMode={false}
+              onClick={() => {
+                router.push(`/myplaylist/${playlist.id}`);
+              }}
+            />
+          ))}
+        </ul>
+      )}
+
+      {selectedIds.length > 0 && (
+        <TrashButton onDelete={handleDelete} count={selectedIds.length}/>
+      )}
+    </>
+  );
+};
+
+export default MyPlaylistsSection;

@@ -1,0 +1,663 @@
+@use './reset' as *;
+@use './mixins' as *;
+@use './variables' as *;
+
+.header{
+    @include publicWidth;
+    @include logo_style;
+    padding: 20px 0;
+}
+
+//디테일 헤더
+.detailHeader{
+    @include flex($justify: space-between);
+    padding: 20px 0;
+}
+
+.title{
+    @include GmarketMedium_black_23;
+    padding: 20px 0;
+}
+
+.sub-title{
+    @include GmarketMedium_black_18;
+    padding: 23px 0;
+}
+
+.tagbtn{
+    @include GmarketMedium_black_13;
+    display: inline-block;
+    padding: 11px 14px 9px;
+    border: 1px solid $blue;
+    border-radius: 85px;
+    cursor: pointer;
+
+    &.active,
+    &:not(.readonly):hover {
+        background-color: $blue;
+        color: $white;
+    }
+
+    &.readonly {
+        cursor: default;
+    }
+}
+
+.section-header{
+    margin-bottom: 20px;
+    cursor: pointer;
+    >h2{ 
+        @include GmarketMedium_black_13;
+        display: inline-block;
+        &::after{
+            content: '';
+            display: inline-block;
+            width: 6px; height: 11px;
+            vertical-align: middle;
+            margin: 0 0 1px 5px;
+            background: url('/icons/more-arrow.svg') no-repeat center / contain;
+        }
+    }
+}
+
+.more-arrow{
+    width: 5px; height: 10px;
+}
+
+input:checked + .tagbtn{
+    display: inline-block;
+    padding: 11px 14px 9px;
+    color: white;
+    border: 1px solid $blue;
+    background-color: $blue;
+    border-radius: 85px;
+}
+
+// textfield
+.textfield{
+    width: 100%;
+    margin-bottom: 12px !important;
+
+    .MuiInput-root {
+        font-family: var(--font-gmarketMedium);
+        font-size: 14px !important;
+        color: $black;
+
+        input {
+            padding: 10px 0;
+
+            &::placeholder {
+                font-family: var(--font-Galmuri9);
+                font-size: 12px;
+                color: $gray;
+                opacity: 1;
+            }
+        }
+
+        // 기본 border
+        &::before{
+            border-color: $lightgray;
+        }
+
+        // hover 시 border
+        &:hover:not(.Mui-disabled, .Mui-error)::before{
+            border-color: $blue;
+        }
+
+        // focus 시 border
+        &.Mui-focused::after{
+            border-color: $blue;
+        }
+
+        // error 시 border
+        &.Mui-error::before,
+        &.Mui-error::after{
+            border-color: $orange;
+        }
+    }
+
+    // label
+    .MuiInputLabel-root {
+        font-family: var(--font-gmarketMedium) !important;
+        font-size: 14px !important;
+        color: $fontgray;
+
+        // focus 시 label
+        &.Mui-focused {
+            color:$black;
+        }
+
+        // error 시 label
+        &.Mui-error {
+            color: $orange;
+        }
+
+        // 필수 입력 *
+        .MuiFormLabel-asterisk {
+            color: currentColor;
+        }
+    }
+
+    // 에러 메세지
+    .MuiFormHelperText-root.Mui-error {
+        color: $orange;
+        font-family: var(--font-gmarketMedium);
+        font-size: 12px;
+    }
+}
+
+// longbtn
+.longbtn{
+    width: 100%;
+    padding: 20px 0;
+    color: $white;
+    font-size: $regular;
+    text-align: center;
+    border-radius: $radius10;
+    background-color: $lightgray;
+    opacity: 0.5;
+
+    &.active{
+        background-color: $blue;
+        opacity: 1;
+    }
+}
+
+// Shortbtn
+.shortbtn{
+    width: 50%;
+    padding: 15px 20px;
+    color: $white;
+    font-size: 14px;
+    text-align: center;
+    border-radius: $radius10;
+    background-color: $lightgray;
+    opacity: 0.5;
+
+    &.active{
+        background-color: $blue;
+        opacity: 1;
+    }
+}
+
+// tracklist
+.tracklist{
+    li{
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: relative;
+    }
+    .trackitem-num-home{
+        position: absolute;
+        display: block;
+        left: -13px; bottom: -15px;
+        color: $orange;
+        font-size: 40px;
+        text-shadow: 2px 2px 6px rgba(26, 26, 26, 0.3);
+    }
+    .trackitem-center{
+        width: 65%;
+        display: flex;
+        align-items: start;
+        gap: 16px;
+
+        .trackitem-num-chart{
+            width: 8%;
+            flex-shrink: 0;
+            font-family: var(--font-gmarketBold);
+            font-size: 14px;
+        }
+
+        > div{
+            flex: 1;
+            min-width: 0;
+
+            p, span{
+                display: block;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+            }
+            p{
+                font-size: 13px;
+                margin-bottom: 5px;
+            }
+            span{
+                font-size: 11.5px;
+                color: $gray;
+                cursor: pointer;
+            }
+        }
+    }
+    .trackitem-right{
+        display: flex;
+        gap: 22px;
+        .icons-play{
+            width: 11px; height: 14px;
+        }
+        .icons-dot{
+            width: 4px; height: 18px;
+        }
+    }
+    .trackitem-image{
+        border-radius: 5px;
+        overflow: hidden;
+        width: 45px; height: 45px;
+        cursor: pointer;
+    }
+
+    .skeleton{ align-items: center; }
+}
+
+//sortBtn
+.sortBtn-wrapper{
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: flex-end;
+    .sortBtn{
+        display: flex;
+        gap: 6px;
+        .drop{
+            width: 9px; height: 7px;
+        }
+    }
+}
+
+// footer
+.footer-container{
+    .footer-icons{
+        @include flex($justify: center, $align: center);
+        gap: 16px;
+
+        .icons-git{ width: 15px; }
+        .icons-figma{ width: 13px; }
+    }
+
+    p{ margin: 12px 0 10px;}
+    
+    p, span{
+        font-family: var(--font-Galmuri9);
+        font-size: 9px;
+        display: block;
+        text-align: center;
+    }
+}
+
+// iconbutton
+.icon-button{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    margin: 20px 0;
+    cursor: pointer;
+}
+
+// onboarding popup
+.onboarding_overlay{
+    position: fixed;
+    left: 0; top: 0;
+    width: 100%; height: 100vh;
+    background-color: rgba(26, 26, 26, 0.3);
+}
+
+.onboarding_contents{
+    position: absolute;
+    display: block;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 320px; height: auto;
+    border-radius: $radius10;
+    background-color: $white;
+    padding: 22px;
+    text-align: center;
+
+    .onboarding_icon{margin: 8px 0 25px; color: #777;}
+    .onboarding_nickname{
+        input {
+            text-align: right;
+            padding-right: 10px;
+        }
+
+        input::placeholder {
+            font-family: var(--font-Galmuri9);
+            text-align: right;
+            opacity: 1;
+        }
+    }
+    .onboarding_birth{
+        margin: 18px 0 15px;
+    }
+
+    >h2{
+        @include Galmuri9_20;
+    }
+    >span{
+        font-size: 12px;
+        color: $gray;
+        display: block;
+        margin: 8px 0 30px;
+    }
+
+    .onboarding_nickname, .onboarding_birth, .onboarding_gender, .onboarding_buttons{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .onboarding_gender{
+        margin: 15px 0 30px;
+
+        .gender-item-box{
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    }
+
+    .onboarding_buttons{
+        gap: 10px;
+    }
+}
+
+// dialog - track
+.track-dialog-content{
+    padding: 20px 0;
+    width: 300px;
+
+    .complete-btn-box-in-dialog{
+        text-align: center;
+
+        .complete-btn-in-dialog{margin-right: 0 !important;}
+    }
+
+    .content1-in-dialog{
+        padding: 0 20px;
+        
+        button{
+            display: block;
+            margin: 20px auto;
+            cursor: pointer;
+        }
+        hr{width: 100%;}
+    }
+    .content2-in-dialog{
+        .title2-in-dialog{
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+
+            h3{
+                font-size: 18px;
+                padding: 0 25px 0 15px;
+            }
+        }
+
+        .new-btn-box{
+            padding: 0 20px;
+            margin: 25px 0;
+            @include flex;
+            cursor: pointer;
+            gap: 5px;
+            font-size: 13px;
+            button{
+                color: $blue;
+                display: inline-flex;
+                height: 12px;
+            }
+        }
+        .og-txt-in-dialog{
+            padding: 0 20px;
+            margin: 18px 0;
+            font-size: 13px;
+        }
+
+        .playlist-item-in-dialog{
+            // margin: 15px 0;
+            display: flex;
+            // justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 20px;
+
+            // &:last-of-type{margin-bottom: 0 !important;}
+        }
+        .playlist-thumb-in-dialog{
+            width: 40px; height: 40px;
+        }
+        .playlist-title-in-dialog{
+            font-size: 13px;
+
+            &.selected{background-color: #E9F7FF;}
+        }
+        .complete-btn-in-dialog{
+            margin-top: 18px;
+        }
+
+        .swiper-container {
+            width: 100%;
+            
+            .swiper {
+                padding-bottom: 20px !important; 
+                // overflow: visible !important;
+            }
+
+            .swiper-pagination-bullets {
+                bottom: 0px !important; 
+                
+                // // 만약 정 중앙이 아니라 약간 왼쪽/오른쪽으로 치우친다면 아래 속성으로 잡아줍니다.
+                // left: 50% !important;
+                // transform: translateX(-50%) !important;
+                // width: 100% !important;
+            }
+
+            .swiper-pagination-bullet {
+                // background: #ccc !important; // 기본 점 색상
+                
+                &-active {
+                    background: $blue !important; // 활성화된 점 색상
+                }
+            }
+        }
+        .empty-in-dialog{
+            padding: 0 0 18px 0;
+            > .empty-state__title{
+                margin-top: 16px;
+            }
+        }
+    }
+    .content3-in-dialog{
+        padding: 0 20px;
+        height: 100%;
+
+        h3{
+            font-size: 18px;
+            text-align: center;
+            margin: 28px 0 8px;
+        }
+        input::placeholder{
+            font-family: var(--font-Galmuri9);
+            font-size: 13px;
+        }
+        .complete-btn-in-dialog{
+            margin-top: 28px;
+        }
+    }
+}
+
+//logout 버튼
+.logout{
+    font-size: 11px;
+    color: $fontgray;
+}
+
+// cd
+.zizi-CD {
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .CDcase-image {
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 0; right: 0;
+  }
+
+  .CD-image {
+    width: 98px;
+    height: auto;
+    position: absolute;
+    top: 2px; right: 6.5px;
+
+    transform-origin: center;
+  }
+
+  &.spin .CD-image {
+    animation: spin 1.5s ease-out;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// player
+.main-player-wrapper {
+  position: fixed; // 반드시 fixed
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9); // 배경이 있어야 뒤가 가려짐
+  z-index: 9999; // 네비게이션(Mui 등)보다 무조건 높아야 함
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .player-inner {
+    width: 90%; // 또는 적절한 사이즈
+    height: 500px;
+    background: #222;
+    position: relative;
+    
+    // 닫기 버튼이 위젯에 가려지지 않게
+    .close-btn {
+      position: absolute;
+      top: -40px;
+      right: 0;
+      width: 30px; height: 30px;
+    //   color: white;
+    }
+
+    .youtube-btn{
+        display: block;
+        margin: 15px auto 0;
+        color: $white;
+        text-align: center;
+        font-size: 12px;
+        // text-decoration: underline;
+    }
+  }
+}
+
+.delete-bar {
+  background-color: $white;
+  width: 390px;
+  height: 50px;
+
+  position: fixed !important;
+  bottom: 0;
+
+  transition: transform 0.25s ease;
+  box-shadow: 0 -4px 8px rgba(5, 140, 215, 0.2);
+  z-index: 100;
+
+  @include flex($justify: center);
+
+  .trash {
+    width: 100%;
+    height: 100%;
+    font-size: 13px;
+  }
+}
+
+// AppSnackbar
+.snackbar-container {
+  bottom: 80px !important;
+}
+
+/* MUI 내부 content override */
+.snackbar-container .MuiSnackbarContent-root {
+  background-color: #fff;
+  color: #1A1A1A;
+  border: 1px solid #058CD7;
+  border-radius: 50px;
+  box-shadow: 0 6px 20px rgba(5, 140, 215, 0.12);
+
+  font-family: var(--font-Galmuri9);
+  font-size: 13px;
+  letter-spacing: 0.5px;
+
+  min-width: 0;
+  width: fit-content;
+  padding: 5px 20px;
+
+  display: flex;
+  justify-content: center;
+}
+
+.app-snackbar-message {
+  width: 100%;
+  text-align: center;
+}
+
+// 내 플리 만들기 버튼
+.action-btn{
+    @include flex;
+    cursor: pointer;
+    gap: 5px;
+}
+
+.empty-state{
+    @include flex();
+    flex-direction: column;
+    padding-top: 60px;
+    img{ width: 120px; }
+    .empty-state__title{
+        margin: 20px 0 12px;
+        @include Galmuri9_20;
+    }
+    .empty-state__description{
+        text-align: center;
+        white-space: pre-line;
+        font-size: 12px;
+        color: $gray;
+    }
+}
+
+//
+.password-find{
+    @include publicWidth;
+}
+
+.password-find-title{
+    font-family: var(--font-Galmuri9);
+    font-weight: normal;
+    font-size: 16px;
+}
+
+.dialog-close{
+    font-family: var(--font-Galmuri9);
+    font-size: 20px;
+    line-height: 1;
+}

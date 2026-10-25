@@ -1,0 +1,99 @@
+'use client';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useSession } from 'next-auth/react';
+import { useParams } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { recent } from '@/lib/recent';
+import { getArtist } from '@/lib/api/artist';
+import { Artist } from '@/types/deezer/deezer';
+
+import Back from '@/components/icons/Back';
+import TabsContainer from '@/components/common/TabsContainer';
+import ArtistAlbums from '@/components/entities/artist/container/ArtistAlbums';
+import ArtistTracks from '@/components/entities/artist/container/ArtistTrack';
+import ArtistPageSkeleton from '@/components/loading/page/ArtistPageSkeleton';
+
+import '@/styles/artist/artist.scss';
+
+const Page = () => {
+  // URL에서 아티스트 id 추출
+  const { id } = useParams() as { id: string };
+  const { data: session } = useSession();
+
+  // 탭 상태
+  const [ tabValue, setTabValue ] = useState(0);
+
+  const { data: artist, isLoading } = useQuery<Artist>({
+    queryKey: ['artist', id],
+    queryFn: () => getArtist(Number(id)),
+    enabled: !!id,
+  });
+
+  // 탭 정의
+  const tabs = [
+    { label: '앨범', content: <ArtistAlbums id={id} artist={artist}/> },
+    { label: '인기곡', content: <ArtistTracks id={id} name={artist?.name || ''} /> }
+  ];
+
+  useEffect(() => {
+    if (!id) return;
+    if (!session?.user?.id) return;
+    
+    recent({
+      type: 'artist',
+      id,
+      isLoggedIn: !!session?.user?.id,
+    });
+  }, [id, session?.user?.id]);
+
+  return (
+    <div className="artist-detail">
+      {isLoading ? (
+        <ArtistPageSkeleton />
+      ) : !artist ? (
+        <div>아티스트 없음</div>
+      ) : (
+        <section className="artist-top">
+          <div className="artist-img">
+            <Image
+              src={artist.picture_xl ?? '/imgs/default.png'}
+              alt={artist?.name || 'artist image'}
+              fill
+              className='artist-cover fade-mask'
+              style={{ objectFit: 'cover' }}
+            />
+
+            <div className="artist-backBtn">
+              <Back className ='detailHeader' />
+            </div>
+
+            <h1 className="artist-name">{artist.name}</h1>
+          </div>
+
+          <div className="artist-info">
+            <p className="artist-nb_album">
+              {artist.nb_album.toLocaleString()}장의 앨범 발매
+            </p>
+
+            <p className="artist-followers">
+              {artist.nb_fan.toLocaleString()}명이 밤새 덕질 중...zZ
+            </p>
+          </div>
+        </section>
+      )}
+
+      <div className="artist-down">
+        <TabsContainer
+          tabs={tabs}
+          tabValue={tabValue}
+          setTabValue={setTabValue}
+          fullWidth
+          width
+        />
+      </div>
+    </div>
+  );
+};
+
+export default Page;

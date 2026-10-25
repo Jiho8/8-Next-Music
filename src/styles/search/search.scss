@@ -1,0 +1,105 @@
+@use '../variables'as *;
+@use '../mixins'as *;
+@use '../entitiesUI/artistCard.scss'as *;
+@use '../entitiesUI/albumCard.scss'as *;
+@use '../entitiesUI/playlistCard.scss'as *;
+
+.search-container{
+    .title, .search-tabs, .allReslts-track, .allReslts-playlist, .allReslts-album, 
+    .artistTab-container, .trackTab-container, .albumTab-container, .playlistTab-container, .sortBtn-wrapper{
+        @include publicWidth;
+    }
+
+    .search-bar{
+        @include publicWidth;
+        display: flex;
+        margin-bottom: 30px;
+        border-bottom: 2px solid black;
+        >input{
+            width: 100%;
+            padding: 8px 2px;
+        }
+        >input::placeholder{
+            font-family: var(--font-Galmuri9);
+        }
+    }
+
+    .trendingTags-contanier, .trendingSearches-contanier{
+        @include publicWidth;
+
+        >*{margin-bottom: 50px;}
+        h3{
+            margin-bottom: 20px;
+            @include Galmuri9_20;
+        }
+    }
+    .trendingSearches-contanier{
+        .trending{
+            @include flex($align: center);
+            gap: 10px;
+            margin-bottom: 20px;
+            >.keyword{
+                cursor: pointer;
+                font-size: 14px;
+            }
+        }
+        .num{
+            width: 23px;
+            color: $blue;
+            font-size: 15px;
+        }
+    }
+    .trendingTags-contanier{
+        .tag-ul{
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            
+            .genreTag{
+                padding: 10px 14px 12px;
+            }
+        }
+        
+    }
+    .allReslts-container{
+        margin-top: 10px;
+        .allReslts{ 
+            margin-bottom: 50px; 
+        }
+        .allReslts-artist{
+            margin-left: 18px;
+            .artist-box{ 
+                flex-direction: column; margin-bottom: 0px;
+                .artist-name{ text-align: center; }
+            }
+            .artist-container{
+                display: flex;
+                padding-right: 18px;
+            }
+        }
+
+
+        .search-results{
+            flex-direction: row;
+            padding: 0;
+            gap: 8px;
+            .empty-state__title{
+                margin: 0 0 12px;
+            }
+            .empty-state__description{
+                text-align: left;
+            }
+        }
+    }
+
+    .search-results{
+        .empty-state__description{
+            .empty-state__keyword {
+                color: $black;
+                background: rgba($blue, 0.1);
+                padding: 4px;
+                border-radius: 4px;
+            }
+        }
+    }
+}

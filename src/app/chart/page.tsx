@@ -1,0 +1,20 @@
+'use client';
+
+import React from 'react'
+import PageTitle from '@/components/common/PageTitle'
+import ChartTab from '@/components/chart/ChartTab';
+
+import '@/styles/chart/chart.scss';
+
+export default function Page() {
+
+  return (
+    <div className='chart-container'>
+      {/* page title */}
+      <PageTitle text='차트'/>
+      
+      {/* tab 및 tabContents */}
+      <ChartTab />
+    </div>
+  )
+}

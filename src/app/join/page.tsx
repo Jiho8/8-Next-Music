@@ -1,0 +1,79 @@
+import React from 'react'
+import JoinForm from './joinForm';
+import Back from '@/components/icons/Back'
+import { JoinField } from '@/types/join';
+
+import '../../styles/join/join.scss'
+
+function page() {
+    const data: JoinField[] = [
+        {
+            label: '이름',
+            type: 'name',
+            placeholder: '예) 김지지',
+            required: true
+        },
+        {
+            label: '아이디',
+            type: 'username',
+            placeholder: '영문 · 숫자를 조합해 4~16자로 입력해줘',
+            required: true
+        },
+        {
+            label: '이메일',
+            type: 'email',
+            placeholder: '예) zizi@gmail.com',
+            required: true
+        },
+        {
+            label: '비밀번호',
+            type: 'password',
+            placeholder: '영문 · 숫자 · 특수문자를 포함해 8자 이상 입력해줘',
+            required: true
+        },
+        {
+            label: '비밀번호 확인',
+            type: 'password-check',
+            required: true
+        },
+        {
+            label: '비밀번호 찾기 질문',
+            type: 'securityQuestion',
+            required: true,
+        },
+        {
+            label: '답변',
+            type: 'securityAnswer',
+            placeholder: '질문의 답을 입력해줘',
+            required: true,
+        },
+        {
+            label: '닉네임',
+            type: 'nickname',
+            placeholder: "ex) 🎧 zi존_뮤직 🎧",
+            required: false
+        },
+        {
+            type: 'date',
+            placeholder: '달력을 통해 생년월일을 입력해주세요.',
+            required: false
+        },
+        {
+            label: '성별',
+            type: 'gender',
+            required: false
+        },
+    ];
+    
+    return (
+        <div className='join-container'>
+            <Back className='join'/>
+
+            <p className='join-title'>회원가입</p>
+
+            <JoinForm listData={data}/>
+        </div>
+    )
+}
+
+export default page

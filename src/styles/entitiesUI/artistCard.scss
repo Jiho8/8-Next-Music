@@ -1,0 +1,61 @@
+@use '../variables'as *;
+@use '../mixins'as *;
+
+// all, artist 공통 스타일
+.artist-image{
+    width: 98px; height: 98px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+// 아티스트 Card 컴포넌트
+.artist-box{
+    >div:last-child{ width: 68%; }
+    @include flex($align: center);
+    gap: 13px;
+    margin-bottom: 20px;
+    .artist-box-info{
+        >img{ width: 80px;}
+        .artist-level{
+            display: inline-block;
+            color: $white;
+            padding: 2px 8px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+            font-family: var(--font-Galmuri9);
+            font-size: 9px;
+            margin-bottom: 5px;
+        }
+         .world {
+            background: #FFD620;
+        }
+
+        .top {
+            background: #E2E2E2;
+        }
+
+        .popular {
+            background: #cd7f32;
+        }
+        .artist-name{
+            @include ellipsis(2);
+            margin-bottom: 6px;
+        }
+        .artist-fans{
+            >div{ 
+                width: 12px; height: 12px; 
+                >img{ transform: translateY(-2px);}
+            }
+            @include flex($align: center);
+            gap: 5px;
+            color: $fontgray;
+
+        }
+    }
+
+    .artist-genre{
+        margin-top: 15px;
+        text-transform: uppercase;
+        color: $gray;
+    }
+}

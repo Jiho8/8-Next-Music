@@ -1,0 +1,54 @@
+import { JoinData } from "@/types/user/profile";
+import { api } from "./axios";
+
+// 마지막 접속 업데이트
+export const updateLastVisited = async () => {
+  const res = await api.patch('/user/visit');
+
+  return res.data;
+};
+
+// 회원가입
+export const join = async (data: JoinData) => {
+  const res = await api.post('/auth/join', data);
+
+  return res.data;
+};
+
+// 회원탈퇴
+export const deleteUser = async () => {
+  const res = await api.delete('/user');
+
+  return res.data;
+};
+
+// 아이디, 이메일 중복 체크
+export const checkDuplicate = async (
+  type: 'username' | 'email',
+  value: string
+) => {
+  const res = await api.post('/auth/check-duplicate', { type, value });
+
+  return res.data;
+};
+
+// 비밀번호 찾기 본인 확인
+export const verifyPassword = async (data: {
+  username: string;
+  securityQuestion: string;
+  securityAnswer: string;
+}) => {
+  const res = await api.post('/auth/password/verify', data);
+
+  return res.data;
+};
+
+// 비밀번호 변경
+export const resetPassword = async (data: {
+  username: string;
+  newPassword: string;
+}) => {
+  const res = await api.patch('/auth/password/reset', data);
+  
+  return res.data;
+};

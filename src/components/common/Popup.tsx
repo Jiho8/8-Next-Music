@@ -1,0 +1,120 @@
+import '@/styles/common/popup.scss';
+
+interface Props {
+  onClose: () => void;
+  type: 'login' | 'loginPlaylist' | 'loginMyRoom' | 'delete' | 'logout' | 'exit' | 'withdraw';
+  onConfirm?: () => void;
+  onCancel?: () => void;
+  className?: string;
+  isLoading?: boolean;
+  loadingText?: string;
+}
+
+interface PopupContent {
+  txt: string;
+  subtxt?: string;
+  btntxt1: string;
+  btntxt2: string;
+  icon: React.ReactNode;
+}
+
+function Popup({ onClose, type, onConfirm, onCancel, className='', isLoading, loadingText }: Props) {
+
+  // type별 팝업 내용
+   const popupContent: Record< Props['type'], PopupContent > = {
+    loginPlaylist: {
+      txt: '로그인하고 나만의 플리 만들기 - !',
+      btntxt1: 'CANCEL',
+      btntxt2: 'O K',
+      icon: '🔓'
+    },
+
+    loginMyRoom: {
+      txt: '로그인하고 MY ROOM 입장하기 - !',
+      btntxt1: 'CANCEL',
+      btntxt2: 'O K',
+      icon: '🏠'
+    },
+
+    login: {
+      txt: `로그인하고 나만의 플리 만들기 - ! `,
+      btntxt1: 'CANCEL',
+      btntxt2: 'O K',
+      icon: '🔓'
+    },
+    delete: {
+      txt: '정말 삭제하시겠습니까?',
+      btntxt1: 'CANCEL',
+      btntxt2: 'O K',
+      icon: '🗑️'
+    },
+    logout: {
+      txt: '정말 로그아웃하시겠습니까?',
+      btntxt1: '아니오',
+      btntxt2: '예',
+      icon: '⚠️'
+    },
+    exit: {
+      txt: '작성중인 내용이 있습니다. 나가시겠습니까?',
+      subtxt: '변경사항은 저장되지 않습니다.',
+      btntxt1: '아니오',
+      btntxt2: '예',
+      icon: '⚠️'
+    },
+    withdraw: {
+      txt: '정말 탈퇴할 생각이야 ?',
+      subtxt: '내 플리와 활동 기록은 영원히 안녕이야..(இᯅஇ)',
+      btntxt1: 'STAY',
+      btntxt2: 'BYE',
+      icon: '💔'
+    }
+  }
+
+  // 팝업 배경 클릭 시 팝업 닫힘
+  function closePopup(e: React.MouseEvent<HTMLDivElement>) {
+    const target = e.target as HTMLElement;
+
+    if(target.classList.contains('popup-box')) {
+      onClose();
+    }
+  }
+
+  return (
+    <div className={className ? className : 'popup-box'} onClick={closePopup}>
+      <div className='popup'>
+
+        <div className='popup-cont'>
+          <p className='popup-icon'>{popupContent[type]?.icon}</p>
+          <p>
+            {popupContent[type]?.txt}
+            <span className='popup-subtxt'>{popupContent[type]?.subtxt}</span>
+          </p>
+        </div>
+
+        <div className='popup-btns-box'>
+          <button 
+            className='btn2popup-btn' 
+            onClick={() => {
+              onClose();
+              onCancel?.();
+            }}
+          >
+            {popupContent[type]?.btntxt1}
+          </button>
+          <button
+            className='btn1popup-btn'
+            disabled={isLoading}
+            onClick={() => {
+              if (onConfirm) onConfirm();
+            }}
+          >
+            {isLoading ? loadingText : popupContent[type]?.btntxt2}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  )
+}
+
+export default Popup

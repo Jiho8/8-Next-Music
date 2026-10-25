@@ -1,0 +1,62 @@
+@use '../variables'as *;
+@use '../mixins'as *;
+
+.join{
+    &.back{
+        padding: 20px 0;
+        cursor: pointer;
+        >img{width: 14px; height: 14px;}
+    }
+    &.check-square-off, &.check-square-on{
+        width: 19px; height: 18px;
+    }
+}
+
+.join-container{
+    width: $publicWidth;
+    // min-height: 100vh;
+    margin: 0 auto;
+
+    .join-title{margin-bottom: 16px;}
+
+    .join-content-box{
+        .join-gender-box{
+            p{
+                font-size: 15px;
+                margin: 10px 0;
+            }
+            .join-tagbtn{
+                margin: 7px 10px 16px 0;
+            }
+            .gender-item-box{
+                @include flex;
+                gap: 10px;
+            }
+        }
+        .info{
+            display: block;
+            color: $orange;
+            text-align: right;
+            font-size: 12px;
+        }
+        .join{
+            margin-bottom: 20px;
+        }
+    }
+
+    .join-agree-box{
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 30px 0 15px;
+        font-size: 12px;
+        color: $black;
+
+        button{
+            text-decoration: underline;
+            font-size: 12px;
+            color: $blue;
+            cursor: pointer;
+        }
+    }
+}

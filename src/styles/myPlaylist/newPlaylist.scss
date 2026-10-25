@@ -1,0 +1,107 @@
+@use '../variables'as *;
+@use '../mixins'as *;
+
+// 플레이리스트 추가
+.new-playlist-page{
+  .new-playlist-form{
+    @include publicWidth;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 400px;
+    
+    input::placeholder{
+      font-family: var(--font-Galmuri9);
+      font-size: 13px;
+    }
+  }
+  
+  .new-playlist-header {
+    @include flex;
+
+    .new-playlist-back,
+    .submit {
+      flex: 1;
+    }
+
+    .sub-title {
+      text-align: center;
+    }
+
+    .submit {
+      @include flex($justify: flex-end);
+      font-size: 13px; color: $orange;
+    }
+
+    .back{
+      width: 16px; height: 16px;
+    }
+  }
+  .new-playlist-btn{
+    @include flex;
+    cursor: pointer;
+    gap: 5px;
+    font-size: 13px;
+    margin: 20px 18px;
+    p{
+      color: $blue;
+      display: inline-flex;
+      height: 12px;
+    }
+  }
+
+  .new-playlist-tracks{
+    li{
+      @include section-padding;
+    }
+
+    .selected{
+      @include selected-style;
+    }
+  }
+}
+
+// 곡 추가
+.add-track{
+  @include publicWidth;
+
+  .search-bar{
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 2px solid black;
+    >input{
+      width: 100%;
+      padding: 8px 2px;
+    }
+    >input::placeholder{
+      font-family: var(--font-Galmuri9);
+    }
+  }
+}
+
+.myplaylist-btn{
+  @include flex($justify: space-between);
+  margin-bottom: 10px !important;
+  p{
+    display: inline-flex;
+    height: 12px;
+  }
+}
+
+.playlist-header{
+  .playlist-header-actions{
+    button{
+      font-size: 13px;
+    }
+
+    button::after{
+      content: "·";
+      margin: 0 8px;
+    }
+
+    .submit{
+      font-size: 13px; color: $orange;
+    }
+  }
+
+}
